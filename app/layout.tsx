@@ -6,13 +6,13 @@ import './globals.css'
 const geist = Geist({ subsets: ['latin'], variable: '--font-geist' })
 
 export const metadata: Metadata = {
-  title: 'DocForensic AI — Explainable document intelligence',
-  description: 'AI-powered document fraud detection and forensic investigation for finance and operations teams.',
+  title: 'DocForensic AI — Evidence Intelligence',
+  description: 'AI-powered document verification, investigations, and forensic intelligence.',
   generator: 'DocForensic AI',
 }
 
-export const viewport: Viewport = { colorScheme: 'dark', themeColor: '#07111e', userScalable: false }
+export const viewport: Viewport = { colorScheme: 'dark', themeColor: '#101112', userScalable: false }
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="en" className="bg-[#07111e]"><body className={`${geist.variable} antialiased`}>{children}{process.env.NODE_ENV === 'production' && <Analytics />}</body></html>
+  return <html lang="en" className="dark"><body className={`${geist.variable} antialiased`}>{children}{process.env.NODE_ENV === 'production' && <Analytics />}</body></html>
 }
