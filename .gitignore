@@ -1,0 +1,20 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# Next.js build
+.next/
+out/
+dist/
+
+# Temporary files & uploads
+temp_uploads/
+*.log
+.DS_Store
+
+# Environment variables
+.env.local

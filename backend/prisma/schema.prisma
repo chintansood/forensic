@@ -1,0 +1,106 @@
+datasource db {
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  extensions = [pgvector(map: "vector")]
+}
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+model Document {
+  id             String              @id @default(cuid())
+  fileName       String
+  fileSizeMB     Float
+  cloudinaryUrl  String
+  status         String              // UPLOADED | RUNNING | COMPLETE | FAILED
+  uploadedAt     DateTime            @default(now())
+  extractedData  ExtractedData?
+  forensics      ForensicsResult?
+  policyCheck    PolicyCheck?
+  vendorHistory  VendorHistoryCheck?
+  ringMatches    RingMatch[]
+  verdict        Verdict?
+  auditLogs      AuditLog[]
+}
+
+model ExtractedData {
+  id              String   @id @default(cuid())
+  documentId      String   @unique
+  document        Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  vendorName      String
+  invoiceNumber   String?
+  amount          Float
+  date            DateTime
+  lineItemsJson   Json
+  ocrConfidence   Float
+}
+
+model ForensicsResult {
+  id                     String                      @id @default(cuid())
+  documentId             String                      @unique
+  document               Document                    @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  elaScore               Float
+  metadataFlags          String[]
+  fontConsistencyScore   Float
+  suspiciousRegionsJson  Json                        // [{x,y,width,height}]
+  severity               String                      // HIGH | REVIEW | CLEAR
+  fingerprintEmbedding   Unsupported("vector(1536)")? // pgvector column, for Ring-Detection similarity search
+}
+
+model PolicyClause {
+  id           String                      @id @default(cuid())
+  text         String
+  category     String
+  embedding    Unsupported("vector(1536)")?
+}
+
+model PolicyCheck {
+  id               String   @id @default(cuid())
+  documentId       String   @unique
+  document         Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  compliant        Boolean
+  citedClauseId    String?
+  explanation      String
+  severity         String   // HIGH | REVIEW | CLEAR
+}
+
+model VendorHistoryCheck {
+  id              String   @id @default(cuid())
+  documentId      String   @unique
+  document        Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  vendorName      String
+  priorCount      Int
+  avgAmount       Float
+  amountDeviation Float
+  severity        String   // HIGH | REVIEW | CLEAR
+  explanation     String
+}
+
+model RingMatch {
+  id                  String   @id @default(cuid())
+  documentId          String
+  document            Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  matchedDocumentId   String
+  similarityScore     Float
+}
+
+model Verdict {
+  id           String   @id @default(cuid())
+  documentId   String   @unique
+  document     Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  riskScore    Int
+  decision     String   // APPROVE | REVIEW | REJECT
+  explanation  String
+  createdAt    DateTime @default(now())
+}
+
+model AuditLog {
+  id           String   @id @default(cuid())
+  documentId   String
+  document     Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  actorId      String
+  action       String
+  timestamp    DateTime @default(now())
+}

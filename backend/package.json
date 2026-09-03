@@ -1,0 +1,38 @@
+{
+  "name": "docforensic-backend",
+  "version": "1.0.0",
+  "description": "DocForensic AI Backend Orchestrator & Multi-Agent Pipeline",
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "prisma:generate": "prisma generate",
+    "prisma:push": "prisma db push",
+    "seed": "tsx src/db/seed.ts"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
+    "@prisma/client": "^5.22.0",
+    "axios": "^1.7.9",
+    "cloudinary": "^2.5.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "mongodb": "^6.12.0",
+    "multer": "^1.4.5-lts.1",
+    "openai": "^4.85.4",
+    "pdf-parse": "^1.1.1",
+    "tesseract.js": "^5.1.1"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/multer": "^1.4.12",
+    "@types/node": "^20.17.10",
+    "@types/pdf-parse": "^1.1.4",
+    "prisma": "^5.22.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}
