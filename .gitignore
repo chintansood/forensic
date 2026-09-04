@@ -13,8 +13,12 @@ dist/
 
 # Temporary files & uploads
 temp_uploads/
+*/temp_uploads/
 *.log
 .DS_Store
 
 # Environment variables
+.env
 .env.local
+.env.*.local
+
