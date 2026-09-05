@@ -1,4 +1,4 @@
-# 🔍 DocForensic AI — Multi-Agent Document Forensics & Fraud Intelligence
+# 🔍 DocForensic AI — Multi-Agent Document Forensics & Collusion Intelligence
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Next.js](https://img.shields.io/badge/Frontend-Next.js%2014-black)](https://nextjs.org/)
@@ -7,30 +7,32 @@
 [![Prisma](https://img.shields.io/badge/Vector%20DB-Prisma%20pgvector-indigo)](https://www.prisma.io/)
 [![MongoDB](https://img.shields.io/badge/Trace%20Store-MongoDB-brightgreen)](https://www.mongodb.com/)
 
-**DocForensic AI** is an enterprise-grade multi-agent web application that automatically inspects, cross-references, and verifies invoices, receipts, and financial documents before payment or reimbursement. 
+> **NioHack 2026 — AI Agent for Finance**  
+> **Team Nexora (T-1008)**: Chintan Sood, Avi Garg, Shreshth Garg, Paarangana Seth  
+> *Thapar Institute of Engineering and Technology*
 
-Unlike black-box scoring systems, DocForensic AI runs **six specialized AI agents** in parallel, providing inspectable evidence bounding boxes, policy clause citations, vendor anomaly detection, and a cross-document **Collusion Ring Detection** graph.
+**DocForensic AI** is an enterprise-grade multi-agent document intelligence platform that verifies invoices and receipts before payment or reimbursement. Rather than relying on simple OCR or black-box LLM scoring, DocForensic AI fuses **pixel-level structural forensics** with a **heterogeneous cross-document collusion graph**.
 
 ---
 
 ## 🌟 Key Features
 
-- **🔎 Multi-Agent Forensic Pipeline**:
-  - **Extraction Agent**: Extracts OCR text, tables, line items, VAT/Tax IDs, and geometry bounding boxes.
-  - **Forensics & CV Agent**: Performs Error Level Analysis (ELA), EXIF metadata inspection, font mismatch detection, and generates 1536-dimensional perceptual document embeddings.
-  - **Policy Compliance Agent**: Automatically evaluates line items against company expense policies, mileage limits, and alcohol/item bans.
-  - **Vendor Intelligence Agent**: Validates bank account changes, tax ID validity, first-time high-value submission risks, and duplicate invoice IDs.
-  - **Ring-Detection Agent**: Links cross-document fraud patterns across multiple submissions (e.g., duplicate invoice numbers across different vendors, identical bank account routing, perceptual template cloning).
-  - **Verdict Fusion Agent**: Synthesizes all agent signals into an explainable 0–100 risk score and categorizes findings as **PASS**, **FLAGGED**, or **SUSPICIOUS**.
+- **🔎 6-Agent Parallel Pipeline**:
+  - **Extraction Agent**: Parses structured line items, VAT/Tax IDs, dates, and spatial geometry bounding boxes.
+  - **Forensics & CV Agent (FastAPI)**: Computes Error Level Analysis (ELA), Laplacian font edge sharpness, and generates 2D-DCT & Sobel perceptual embeddings.
+  - **Policy Compliance Agent**: Evaluates line items and spending limits against corporate policy clauses.
+  - **Vendor Intelligence Agent**: Monitors historical spend velocity, tax ID formats, and unexpected bank routing changes.
+  - **Ring-Detection Agent**: Performs cosine distance queries in `pgvector` to identify cloned templates and shared payment infrastructure across ostensibly separate vendors.
+  - **Verdict Fusion Agent**: Synthesizes all multi-modal signals into an explainable **Composite Forensic Risk Index (0–100)**.
 
-- **🗺️ Interactive Evidence Inspector**:
-  - Visual overlay bounding boxes over the original PDF/image for every flagged anomaly (font tampering, layout distortion, duplicate amounts).
+- **🕸️ Heterogeneous Collusion Evidence Graph**:
+  - Distinguishes legitimate shared templates (e.g. QuickBooks, Canva) from coordinated fraud rings by requiring multi-edge corroboration (Template similarity + Overlapping bank account + Tax/domain footprint).
 
-- **🕸️ Collusion Network Graph**:
-  - Real-time visual network graph linking suspicious vendors, shared bank accounts, and duplicate document signatures.
+- **🗺️ Audit-Ready Evidence Canvas**:
+  - Renders real-time spatial bounding-box overlays over original documents, highlighting anomalous font variations and digital tampering regions.
 
-- **📜 Complete Audit Trail**:
-  - Full cryptographic event stream logging every agent step, timestamp, raw execution payload, and human reviewer action.
+- **🛡️ Traceable Decision Trail**:
+  - Full cryptographic event stream logging every agent trace and reviewer action (**Approve, Escalate, Reject**).
 
 ---
 
@@ -52,22 +54,25 @@ Unlike black-box scoring systems, DocForensic AI runs **six specialized AI agent
         ▼                       ▼        ▼                      ▼
 ┌─────────────────┐ ┌───────────────┐ ┌───────────────┐ ┌─────────────────┐
 │ FastAPI Engine  │ │ MongoDB Trace │ │ PostgreSQL /  │ │ LLM / Vision    │
-│ (ELA, CV, EXIF) │ │ (Agent Logs)  │ │ pgvector      │ │ Reasoning APIs  │
+│ (ELA, CV, DCT)  │ │ (Agent Logs)  │ │ pgvector      │ │ Reasoning APIs  │
 └─────────────────┘ └───────────────┘ └───────────────┘ └─────────────────┘
 ```
 
 ---
 
-## 🚀 Getting Started
+## 🧪 Adversarial Evaluation Matrix
 
-### Prerequisites
-
-- **Node.js**: v18.x or higher
-- **Python**: v3.10 or higher
-- **PostgreSQL** (with `pgvector` extension)
-- **MongoDB** (local instance or MongoDB Atlas)
+| Adversarial Attack Transformation | Forensic Detection Layer | System Sensitivity |
+| :--- | :--- | :---: |
+| **PDF Text / Font Replacement** (Acrobat/Editor) | Font descriptor table & object revision stream | **High (✅)** |
+| **Cross-Entity Cloned Template Ring** | Perceptual embedding + Remittance graph edge | **High (✅)** |
+| **Legitimate Shared Template** (e.g. QuickBooks) | Multi-edge graph corroboration (Separate bank/tax) | **Filtered (✅ No False Ring)** |
+| **Flattened Image Export** (Metadata stripped) | Font stroke density & visual layout embedding | **Moderate (🟡)** |
+| **Cleanly Generated Synthetic Fake Invoice** | Historical vendor baseline & Entity graph | **Moderate (🟡)** |
 
 ---
+
+## 🚀 Getting Started
 
 ### 1. Start the Computer Vision & Forensics Microservice
 
@@ -129,29 +134,6 @@ Pre-generated test documents are available in the [`test-data/`](./test-data) di
 - **`test-data/genuine_invoice_1.pdf`**: Clean, standard verified invoice (Scores 0–15).
 - **`test-data/tampered_amount_invoice.pdf`**: Digitally modified total amount triggering ELA and Font inconsistency alarms (Scores 70–95).
 - **`test-data/ring_collusion_doc_A.pdf` & `test-data/ring_collusion_doc_B.pdf`**: Collusion test case with shared routing account across distinct vendor entities.
-
----
-
-## 📡 API Overview
-
-| Endpoint | Method | Description |
-| :--- | :---: | :--- |
-| `/api/documents/upload` | `POST` | Upload single or batch PDF/image invoices |
-| `/api/documents/:id/verify` | `POST` | Execute 6-agent forensic pipeline on document |
-| `/api/documents/:id/report` | `GET` | Retrieve complete verdict report and raw agent findings |
-| `/api/documents/:id/ring-matches` | `GET` | Query cross-document ring linkages & visual graph nodes |
-| `/api/vendors` | `GET` | List vendor risk profiles, submission histories, and flags |
-| `/api/vendors/rings` | `GET` | Fetch all detected collusion clusters |
-| `/api/policies` | `GET / POST` | Manage automated compliance threshold rules |
-| `/api/audit-log` | `GET` | Retrieve chronological agent decision traces |
-
----
-
-## 🛡️ Security & Privacy
-
-- Documents uploaded for analysis are held in temporary storage and cleaned up post-processing according to configured retention policies.
-- Secrets and API credentials must be managed via local environment variables (`.env`).
-- Never commit private API keys or production database credentials to source control.
 
 ---
 
